@@ -1,33 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-  </head>
-  <body>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        h1 {
+            color: #007bff;
+        }
+
+        form {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #666;
+        }
+
+        input[type="file"],
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+        background-color: #4CAF50; /* Primary color */
+        color: white; /* Contrasting text color */
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        }   
+
+        input[type="submit"]:hover {
+            background-color: #45a049; /* Slightly darker shade for hover effect */
+        }
+        
+    </style>
+</head>
+<body>
     <h1>Hello in ATLS App</h1>
     <!-- form to upload video, audio and link -->
     <form action="/getAudioFile" method="post" enctype="multipart/form-data">
-      <label for="audio">Upload Audio File:</label>
-      <input type="file" id="audio" name="audio" accept="audio/*" required/>
-      <input type="submit" id="submit" value="Upload" /><br />
+        <label for="audio">Upload Audio File:</label>
+        <input type="file" id="audio" name="audio" accept="audio/*" required/>
+        <input type="submit" value="Upload" /><br />
     </form>
 
     <br />
 
     <form action="/getVideoFile" method="post" enctype="multipart/form-data" >
-      <label for="video">Upload Video File:</label>
-      <input type="file" id="video" name="video" accept="video/*" required/>
-      <input type="submit" id="submit" value="Upload" /><br />
+        <label for="video">Upload Video File:</label>
+        <input type="file" id="video" name="video" accept="video/*" required/>
+        <input type="submit" value="Upload" /><br />
     </form>
 
     <br />
 
     <form action="/getYoutubeVideoLink" method="post" enctype="multipart/form-data">
-      <label for="youtubeVideoLink">Insert Youtube Video Link:</label>
-      <input type="text" id="youtubeVideoLink" name="youtubeVideoLink" required/>
-      <input type="submit" id="submit" value="Send Video Link" /><br />
+        <label for="youtubeVideoLink">Insert Youtube Video Link:</label>
+        <input type="text" id="youtubeVideoLink" name="youtubeVideoLink" required/>
+        <input type="submit" value="Send Video Link" /><br />
     </form>
-  </body>
+</body>
 </html>
