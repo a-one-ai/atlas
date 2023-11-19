@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>Hello in ATLS App</h1>
+    <!-- form to upload video, audio and link -->
+    <form action="/getAudioFile" method="post" enctype="multipart/form-data">
+      <label for="audio">Upload Audio File:</label>
+      <input type="file" id="audio" name="audio" accept="audio/*" required/>
+      <input type="submit" id="submit" value="Upload" /><br />
+    </form>
+
+    <br />
+
+    <form action="/getVideoFile" method="post" enctype="multipart/form-data" >
+      <label for="video">Upload Video File:</label>
+      <input type="file" id="video" name="video" accept="video/*" required/>
+      <input type="submit" id="submit" value="Upload" /><br />
+    </form>
+
+    <br />
+
+    <form action="/getYoutubeVideoLink" method="post" enctype="multipart/form-data">
+      <label for="youtubeVideoLink">Insert Youtube Video Link:</label>
+      <input type="text" id="youtubeVideoLink" name="youtubeVideoLink" required/>
+      <input type="submit" id="submit" value="Send Video Link" /><br />
+    </form>
+  </body>
+</html>
