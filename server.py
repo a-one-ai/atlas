@@ -64,8 +64,11 @@ def videoFileProcessing():
 
 @app.route("/getYoutubeVideoLink", methods=["POST"])
 def videoLinkProcessing():
-    videoLink = request.form["youtubeVideoLink"]
-    if not videoLink:
+    try:
+        videoLink = request.form["youtubeVideoLink"]
+    except:
+        videoLink = request.json.get("link")
+    if videoLink:
         try:                
             result = proccesYoutubeLinkVideo(videoLink)            
             return jsonify({"data":result})                            
@@ -76,9 +79,9 @@ def videoLinkProcessing():
     else:
         return {"data": "Please enter the youtube video link to be processed !"}
 
-port = 5000      
+port = 8070      
 if __name__ == "__main__":
-    app.run(debug=True,port=port)
+    app.run(host = '0.0.0.0',debug=True,port=port)
     print(f"Server is running at port {port}")
 
     
