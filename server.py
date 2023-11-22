@@ -31,7 +31,9 @@ def audioFileProcessing():
                 audio_path = os.path.join(UPLOAD_Audios_FOLDER_PATH, audio.filename)
                 audio.save(audio_path)
 
-                result = proccesVideoAudioFile(audio_path)            
+                result = proccesVideoAudioFile(audio_path)   
+                print(f"result : {result}")
+                return render_template("audio_display.html", data=result)         
                 return jsonify({"data":result})
             except Exception as error:
                 print(f"Error {type(error)} occurred while processing the audio: {error}")
@@ -51,7 +53,8 @@ def videoFileProcessing():
                 video_path = os.path.join(UPLOAD_Videos_FOLDER_PATH, video.filename)
                 video.save(video_path)
                 print(f" 1video file path {video_path}")
-                result = proccesVideoAudioFile(video_path)            
+                result = proccesVideoAudioFile(video_path)  
+                return render_template("video_display.html", data=result)          
                 return jsonify({"data":result})
             except Exception as error:
                 print(f"Error {type(error)} occurred while processing the video: {error}")
@@ -70,8 +73,8 @@ def videoLinkProcessing():
         videoLink = request.json.get("link")
     if videoLink:
         try:                
-            result = proccesYoutubeLinkVideo(videoLink)            
-            return jsonify({"data":result})                            
+            result = proccesYoutubeLinkVideo(videoLink)  
+            return render_template("link_display.html", data=result)          
         except Exception as error:
             print(f"Error {type(error)} occurred while processing the youtube video link: {error}")
             return {"data": "Please, Re-Upload the youtube video link !!!"}

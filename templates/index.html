@@ -266,24 +266,38 @@
 
         xhr.send(formData);
     });
-    document.getElementById('video').addEventListener('change', function (e) {
-        var file = e.target.files[0];
-        var formData = new FormData();
-        formData.append('video', file);
+    
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('videoForm').addEventListener('submit', function (e) {
+            e.preventDefault(); // Prevent the default form submission
 
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', '/getVideoFile', true);
+            var file = document.getElementById('video').files[0];
+            var formData = new FormData();
+            formData.append('video', file);
 
-        xhr.upload.onprogress = function (e) {
-            if (e.lengthComputable) {
-                var percentComplete = (e.loaded / e.total) * 100;
-                document.getElementById('videoProgress').value = percentComplete;
-            }
-        };
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'http://184.105.215.243:8070/getVideoFile', true);
 
-        xhr.send(formData);
+            xhr.upload.onprogress = function (e) {
+                if (e.lengthComputable) {
+                    var percentComplete = (e.loaded / e.total) * 100;
+                    document.getElementById('videoProgress').value = percentComplete;
+                }
+            };
+
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    // Handle the response, e.g., displaying it in the DOM
+                } else {
+                    // Handle errors
+                }
+            };
+
+            xhr.send(formData);
+        });
     });
-    window.addEventListener('load', function() {
+    window.addEventListener('load', function () {
         var loadingScreen = document.getElementById('loadingScreen');
         loadingScreen.style.display = 'none';
     });
@@ -296,12 +310,12 @@
             method: 'POST',
             body: formData
         })
-        .then(response => response.json())
-        .then(data => {
-            // Redirect to video_page.html with query parameters
-            window.location.href = 'video_page.html?fileName=' + encodeURIComponent(data.fileName);
-        })
-        .catch(error => console.error('Error:', error));
+            .then(response => response.json())
+            .then(data => {
+                // Redirect to video_page.html with query parameters
+                window.location.href = 'video_page.html?fileName=' + encodeURIComponent(data.fileName);
+            })
+            .catch(error => console.error('Error:', error));
     }
 </script>
 
