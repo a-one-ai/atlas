@@ -1,5 +1,5 @@
 from flask import Flask, render_template, jsonify, request
-from models import processVideoAudioFile, processYoutubeLinkVideo
+from models import proccesVideoAudioFile, proccesYoutubeLinkVideo
 import os
 from flask_cors import CORS
 
@@ -40,7 +40,7 @@ def process_audio():
     """Process uploaded audio files."""
     audio = request.files.get("audio")
     if audio and audio.filename:
-        return process_file(audio, UPLOAD_AUDIOS_FOLDER, processVideoAudioFile)
+        return process_file(audio, UPLOAD_AUDIOS_FOLDER, proccesVideoAudioFile)
     return jsonify({"error": "Invalid audio file. Please upload a valid file."}), 400
 
 @app.route("/getVideoFile", methods=["POST"])
@@ -48,7 +48,7 @@ def process_video():
     """Process uploaded video files."""
     video = request.files.get("video")
     if video and video.filename:
-        return process_file(video, UPLOAD_VIDEOS_FOLDER, processVideoAudioFile)
+        return process_file(video, UPLOAD_VIDEOS_FOLDER, proccesVideoAudioFile)
     return jsonify({"error": "Invalid video file. Please upload a valid file."}), 400
 
 @app.route("/getYoutubeVideoLink", methods=["POST"])
@@ -57,7 +57,7 @@ def process_youtube_link():
     video_link = request.form.get("youtubeVideoLink", request.json.get("link"))
     if video_link:
         try:
-            result = processYoutubeLinkVideo(video_link)
+            result = proccesYoutubeLinkVideo(video_link)
             return jsonify({"data": result})
         except Exception as e:
             print(f"Error {type(e).__name__} occurred: {e}")
