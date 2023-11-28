@@ -30,8 +30,8 @@ def process_file(file, folder_path, process_function):
         result = process_function(file_path)
         return jsonify({"data": result})
     except Exception as e:
-        print(f"Error {type(e)} occurred: {e}")
-        return jsonify({"data": "Error processing file. Please try again."})
+        print(f"Error {type(e).__name__} occurred: {e}")
+        return jsonify({"error": "Internal server error. File processing failed."}), 500
 
 @app.route("/getAudioFile", methods=["POST"])
 def process_audio():
@@ -39,7 +39,7 @@ def process_audio():
     audio = request.files.get("audio")
     if audio and audio.filename:
         return process_file(audio, UPLOAD_AUDIOS_FOLDER, processVideoAudioFile)
-    return jsonify({"data": "Invalid audio file. Please upload a valid file."})
+    return jsonify({"error": "Invalid audio file. Please upload a valid file."}), 400
 
 @app.route("/getVideoFile", methods=["POST"])
 def process_video():
@@ -47,7 +47,7 @@ def process_video():
     video = request.files.get("video")
     if video and video.filename:
         return process_file(video, UPLOAD_VIDEOS_FOLDER, processVideoAudioFile)
-    return jsonify({"data": "Invalid video file. Please upload a valid file."})
+    return jsonify({"error": "Invalid video file. Please upload a valid file."}), 400
 
 @app.route("/getYoutubeVideoLink", methods=["POST"])
 def process_youtube_link():
@@ -58,9 +58,9 @@ def process_youtube_link():
             result = processYoutubeLinkVideo(video_link)
             return jsonify({"data": result})
         except Exception as e:
-            print(f"Error {type(e)} occurred: {e}")
-            return jsonify({"data": "Error processing YouTube link. Please try again."})
-    return jsonify({"data": "Please provide a YouTube video link."})
+            print(f"Error {type(e).__name__} occurred: {e}")
+            return jsonify({"error": "Internal server error. YouTube link processing failed."}), 500
+    return jsonify({"error": "Please provide a YouTube video link."}), 400
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True, port=PORT)
