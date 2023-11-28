@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio File Processed</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            padding: 20px;
+            text-align: center;
+        }
+        h1, h2 {
+            color: #007bff;
+        }
+        .data-container {
+            text-align: left;
+            background-color: white;
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .data-section {
+            margin-bottom: 20px;
+        }
+        .data-title {
+            color: #0056b3;
+            font-weight: bold;
+        }
+        .arabic-script {
+            text-align: right;
+            direction: rtl; /* Right-to-left direction for Arabic script */
+            font-family: 'Arial', sans-serif; /* Choose a font that supports Arabic script */
+        }
+    </style>
+</head>
+<body>
+    <h1>Audio File Processed</h1>
+    
+    {% if data %}
+        <div class="data-container">
+            <div class="data-section">
+                <h2 class="data-title">Arabic Script</h2>
+                <p class="arabic-script">{{ data.ar_script }}</p>
+            </div>
+            <div class="data-section">
+                <h2 class="data-title">English Script</h2>
+                <p>{{ data.en_script }}</p>
+            </div>
+            
+        </div>
+        <div>
+            <div class="data-section">
+                <h2 class="data-title">Arabic Summary</h2>
+                <p class="arabic-script">{{ data.ar_summary }}</p>
+            </div>
+            <div class="data-section">
+                <h2 class="data-title">English Summary</h2>
+                <p>{{ data.en_summary }}</p>
+            </div>
+        </div>
+    {% else %}
+        <p>No data received.</p>
+    {% endif %}
+
+    <!-- Rest of the HTML -->
+</body>
+</html>
