@@ -102,7 +102,7 @@ def get_summary(text):
 
 def proccesVideoAudioFile(video_audio_File_Path):
   print(f" 2video file path {video_audio_File_Path}")
-  script,script_time,script_lang=Transcribe_whisper(video_audio_File_Path)
+  script,script_lang,script_time=Transcribe_whisper(video_audio_File_Path)
   ar_script=translate_ar_script(script,script_lang)
   en_script=translate_en_script(script,script_lang)
   en_summary,ar_summary=get_summary(en_script)
@@ -122,7 +122,7 @@ def proccesVideoAudioFile(video_audio_File_Path):
 
 def proccesYoutubeLinkVideo(link):
   audio_path=download_audio_from_youtube(link)
-  script,script_time,script_lang=Transcribe_whisper(audio_path)
+  script,script_lang,script_time=Transcribe_whisper(audio_path)
   ar_script=translate_ar_script(script,script_lang)
   en_script=translate_en_script(script,script_lang)
   en_summary,ar_summary=get_summary(en_script)
