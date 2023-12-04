@@ -54,7 +54,17 @@ def process_video():
 @app.route("/getYoutubeVideoLink", methods=["POST"])
 def process_youtube_link():
     """Process YouTube video links."""
-    video_link = request.form.get("youtubeVideoLink", request.json.get("link"))
+
+    # Try to get the link from form data
+    video_link = request.form.get("link")
+
+    # If not in form data, try to get it from JSON body
+    if not video_link:
+        json_data = request.get_json()
+        if json_data and "link" in json_data:
+            video_link = json_data["link"]
+
+    # Check if the link is received
     if video_link:
         try:
             result = proccesYoutubeLinkVideo(video_link)
@@ -62,7 +72,10 @@ def process_youtube_link():
         except Exception as e:
             print(f"Error {type(e).__name__} occurred: {e}")
             return jsonify({"error": "Internal server error. YouTube link processing failed."}), 500
+
+    # If no link is provided in either form or JSON
     return jsonify({"error": "Please provide a YouTube video link."}), 400
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True, port=PORT)
