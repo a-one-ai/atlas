@@ -39,10 +39,9 @@ def process_file(file, folder_path, process_function):
 def process_audio():
     """Process uploaded audio files."""
     audio = request.files.get("audio")
+    print(type(audio))
     if audio and audio.filename:
-        audio.save(UPLOAD_AUDIOS_FOLDER)
-        result = proccesVideoAudioFile(UPLOAD_AUDIOS_FOLDER)
-        return jsonify({"data": result})
+        return process_file(audio, UPLOAD_AUDIOS_FOLDER, proccesVideoAudioFile)
     return jsonify({"error": "Invalid audio file. Please upload a valid file."}), 400
 
 @app.route("/getVideoFile", methods=["POST"])
@@ -50,9 +49,7 @@ def process_video():
     """Process uploaded video files."""
     video = request.files.get("video")
     if video and video.filename:
-        video.save(UPLOAD_VIDEOS_FOLDER)
-        result = proccesVideoAudioFile(UPLOAD_VIDEOS_FOLDER)
-        return jsonify({"data": result})
+        return process_file(video, UPLOAD_VIDEOS_FOLDER, proccesVideoAudioFile)
     return jsonify({"error": "Invalid video file. Please upload a valid file."}), 400
 
 @app.route("/getYoutubeVideoLink", methods=["POST"])
@@ -79,6 +76,7 @@ def process_youtube_link():
 
     # If no link is provided in either form or JSON
     return jsonify({"error": "Please provide a YouTube video link."}), 400
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True, port=PORT)
