@@ -1,49 +1,27 @@
 """# Import_library"""
-import whisper
-from pytube import YouTube
-from whisper.utils import format_timestamp
+
 from summa.summarizer import summarize
 from deep_translator import GoogleTranslator
 from langdetect import detect
-model = whisper.load_model("large-v3")
+from video_sevice import download_audio_from_youtube,convertVideo
+from transcripe import pipe
+
 
 """# All_Funcation"""
 
-def download_audio_from_youtube(youtube_url):
-    # Create a YouTube object
-    yt = YouTube(youtube_url)
+def transcribeLink(link):
+  audio=download_audio_from_youtube(link)
+  result=pipe(audio)
+  return result['text']
 
-    # Select the audio stream (you may want to choose the best quality)
-    audio_stream = yt.streams.filter(only_audio=True).first()
+def trnascribeVideo(video_path):
+  audio=convertVideo(video_path)
+  result=pipe(audio)
+  return result['text']
 
-    # Define the path where you want to save the audio file in your Colab environment
-    save_path = 'output_audio/audio.mp3'  # Change the filename and extension if you prefer a different format
-
-    # Get the actual file name downloaded by pytube
-    actual_file_name = audio_stream.default_filename
-    audio_stream.download(output_path='output_audio', filename='audio.mp3')
-
-    # Rename the downloaded file to your preferred name
-    # os.rename(os.path.join('', actual_file_name), save_path)
-
-    return save_path
-
-
-def Transcribe_whisper(audio_path):
-# Transcribe the audio from the video
-  text_time = model.transcribe(audio_path)
-  script=text_time['text']
-  script_time=[]
-  script_lang=text_time['language']
-
-  #with open("transcription_with_timestamps.txt", "w", encoding="utf-8") as output_file:
-  for segment in text_time['segments']:
-      start, end, text = segment["start"], segment["end"], segment["text"]
-      line = f"[{format_timestamp(start)} - {format_timestamp(end)}]  {text}"
-      #output_file.write(line + "\n")
-      script_time.append(line)
-
-  return script,script_lang,script_time
+def transcribeAudio(audio_path):
+   result=pipe(audio_path)
+   return result['text']
 
 def translate_en_script(input,script_lang):
   if(script_lang=='en'):
@@ -100,11 +78,10 @@ def get_summary(text):
 
 """# Finial_recall_funcation"""
 
-def proccesVideoAudioFile(video_audio_File_Path):
-  print(f" 2video file path {video_audio_File_Path}")
-  script,script_lang,script_time=Transcribe_whisper(video_audio_File_Path)
-  ar_script=translate_ar_script(script,script_lang)
-  en_script=translate_en_script(script,script_lang)
+def proccesVideoAudioFile(video_file_path):
+  script=trnascribeVideo(video_file_path)
+  ar_script=translate_ar(script)
+  en_script=translate_en(script)
   en_summary,ar_summary=get_summary(en_script)
 
   result={
@@ -112,7 +89,23 @@ def proccesVideoAudioFile(video_audio_File_Path):
       "en_script":en_script,
       "ar_summary":ar_summary,
       "en_summary":en_summary,
-      "script_time":script_time,
+      
+  }
+
+  return result
+
+def proccesAudioFile(audio_File_Path):
+  script=transcribeAudio(audio_File_Path)
+  ar_script=translate_ar(script)
+  en_script=translate_en(script)
+  en_summary,ar_summary=get_summary(en_script)
+
+  result={
+      "ar_script":ar_script,
+      "en_script":en_script,
+      "ar_summary":ar_summary,
+      "en_summary":en_summary,
+
   }
 
   return result
@@ -121,10 +114,10 @@ def proccesVideoAudioFile(video_audio_File_Path):
 # print(proccesVideoAudioFile(video_link))
 
 def proccesYoutubeLinkVideo(link):
-  audio_path=download_audio_from_youtube(link)
-  script,script_lang,script_time=Transcribe_whisper(audio_path)
-  ar_script=translate_ar_script(script,script_lang)
-  en_script=translate_en_script(script,script_lang)
+ 
+  script=transcribeLink(link)
+  ar_script=translate_ar(script)
+  en_script=translate_en(script)
   en_summary,ar_summary=get_summary(en_script)
 
   result={
@@ -132,7 +125,6 @@ def proccesYoutubeLinkVideo(link):
       "en_script":en_script,
       "ar_summary":ar_summary,
       "en_summary":en_summary,
-      "script_time":script_time,
   }
 
   return result

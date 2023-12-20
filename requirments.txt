@@ -1,7 +1,8 @@
-git+https://github.com/openai/whisper.git 
 deep_translator
 langdetect
 summa
 moviepy
 pytube
 flask_cors
+transformers
+torch
