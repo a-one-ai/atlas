@@ -3,25 +3,10 @@
 from summa.summarizer import summarize
 from deep_translator import GoogleTranslator
 from langdetect import detect
-from video_sevice import download_audio_from_youtube,convertVideo
-from transcripe import pipe
+from transcripe import transcribeAudio,transcribeLink,trnascribeVideo
 
 
 """# All_Funcation"""
-
-def transcribeLink(link):
-  audio=download_audio_from_youtube(link)
-  result=pipe(audio)
-  return result['text']
-
-def trnascribeVideo(video_path):
-  audio=convertVideo(video_path)
-  result=pipe(audio)
-  return result['text']
-
-def transcribeAudio(audio_path):
-   result=pipe(audio_path)
-   return result['text']
 
 def translate_en_script(input,script_lang):
   if(script_lang=='en'):

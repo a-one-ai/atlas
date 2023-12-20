@@ -1,5 +1,6 @@
 import torch
 from transformers import AutoModelForSpeechSeq2Seq, AutoProcessor, pipeline
+from video_sevice import download_audio_from_youtube,convertVideo
 
 
 device = "cuda:0" if torch.cuda.is_available() else "cpu"
@@ -26,6 +27,24 @@ pipe = pipeline(
     torch_dtype=torch_dtype,
     device=device,
 )
+
+def transcribeLink(link):
+  audio=download_audio_from_youtube(link)
+  result=pipe(audio)
+  return result['text']
+
+def trnascribeVideo(video_path):
+  audio=convertVideo(video_path)
+  result=pipe(audio)
+  return result['text']
+
+def transcribeAudio(audio_path):
+   result=pipe(audio_path)
+   return result['text']
+
+def translate_en_script(input,script_lang):
+  if(script_lang=='en'):
+      return input
 
 
 
