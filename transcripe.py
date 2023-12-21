@@ -31,8 +31,8 @@ pipe = pipeline(
 
 def transcribeLink(link):
     audio = download_audio_from_youtube(link)
-    audio1 = AudioSegment.from_file(audio)
-    result = pipe(audio1)
+
+    result = pipe(audio)
     return result['text']
 
 
