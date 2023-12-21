@@ -63,7 +63,7 @@ def get_summary(text):
 
 """# Finial_recall_funcation"""
 
-def proccesVideoAudioFile(video_file_path):
+def proccesVideoFile(video_file_path):
   script=trnascribeVideo(video_file_path)
   ar_script=translate_ar(script)
   en_script=translate_en(script)

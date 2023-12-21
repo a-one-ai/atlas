@@ -7,3 +7,7 @@ flask_cors
 transformers
 torch
 accelerate
+setuptools-rust
+ffmpeg
+
+
