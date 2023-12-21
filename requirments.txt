@@ -6,3 +6,4 @@ pytube
 flask_cors
 transformers
 torch
+accelerate

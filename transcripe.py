@@ -1,5 +1,5 @@
 import torch
-from transformers import AutoModelForSpeechSeq2Seq, AutoProcessor, pipeline
+from transformers import AutoModelForSpeechSeq2Seq, AutoProcessor, pipeline, AutoConfig
 from video_sevice import download_audio_from_youtube,convertVideo
 
 
