@@ -238,7 +238,7 @@
         <!-- Link submission with icon -->
         <div class="row-item">
             <i class="fas fa-link icon"></i> <!-- Font Awesome icon for link -->
-            <form action="/getYoutubeVideoLink" method="post">
+            <form action="/getYoutubeVideoLink" method="post" enctype="application/json">
                 <label for="youtubeVideoLink">Insert Youtube Video Link:</label>
                 <input type="text" id="youtubeVideoLink" name="youtubeVideoLink" required />
                 <input type="submit" value="Send Video Link" /><br />
