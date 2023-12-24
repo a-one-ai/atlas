@@ -3,7 +3,7 @@
 from summa.summarizer import summarize
 from deep_translator import GoogleTranslator
 from langdetect import detect
-from transcripe import transcribeAudio,transcribeLink,trnascribeVideo
+from transcripe import transcribeAudio,transcribeLink,transcribeVideo
 
 
 """# All_Funcation"""
@@ -46,7 +46,7 @@ def translate_en(input):
         return translated_text
 
 def translate_ar(input):
-
+        
         max_chunk_length = 500  # The maximum allowed query length
         text_chunks = [
           input[i : i + max_chunk_length] for i in range(0, len(input), max_chunk_length)
@@ -64,7 +64,7 @@ def get_summary(text):
 """# Finial_recall_funcation"""
 
 def proccesVideoFile(video_file_path):
-  script=trnascribeVideo(video_file_path)
+  script=transcribeVideo(video_file_path)
   ar_script=translate_ar(script)
   en_script=translate_en(script)
   en_summary,ar_summary=get_summary(en_script)

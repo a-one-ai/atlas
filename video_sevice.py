@@ -1,45 +1,34 @@
-from pytube import YouTube
-from moviepy.editor import VideoFileClip
+import yt_dlp
 import os
+import datetime
+
+def genrateUniqueName():
+
+    return datetime.datetime.now().strftime("%Y%m%d%H%M%S%f")
 
 
-def download_audio_from_youtube(youtube_url):
-    # Create a YouTube object
-    yt = YouTube(youtube_url)
 
-    # Select the audio stream (you may want to choose the best quality)
-    audio_stream = yt.streams.filter(only_audio=True).first()
+def download_youtube_video(url):
+    file_name=genrateUniqueName()
+    os.makedirs('audio_youtube', exist_ok=True)
+    yt_opts = {
+    'format': 'bestvideo+bestaudio/best',
+    'outtmpl': f'audio_youtube/{file_name}.%(ext)s',
+    'merge_output_format': 'mp4',
+    'postprocessors': [{
+        'key': 'FFmpegExtractAudio',
+        'preferredcodec': 'mp3',
 
-    # Define the path where you want to save the audio file in your Colab environment
-    save_path = 'output_audio/audio.mp3'  # Change the filename and extension if you prefer a different format
-
-    # Get the actual file name downloaded by pytube
-    actual_file_name = audio_stream.default_filename
-    audio_stream.download(output_path='output_audio', filename='audio.mp3')
-
-    # Rename the downloaded file to your preferred name
-    # os.rename(os.path.join('', actual_file_name), save_path)
-
-    return save_path
+    }],
+    'exec_cmd': 'ffmpeg -ss 2 -i {} -t 5 -c copy "{}"',
+    'progress_hooks': [lambda d: print(f"\r{d.get('status', 'Downloading')} ({(d.get('downloaded_bytes', 0) / d.get('total_bytes', 1)):.2%})", end='')]
+    }
 
 
-def convertVideo(video_file_path):
-    """
-    This function converts a video file into an audio file.
+    with yt_dlp.YoutubeDL(yt_opts) as ydl:
+        ydl.download([url])
 
-    Parameters:
-    video_file_path (str): The file path of the video file to convert.
-    """
-    # Load the video file
-    video = VideoFileClip(video_file_path)
+    return 'audio_youtube/'+file_name+'.mp3'
 
-    # Extract the audio from the video
-    audio = video.audio
-    audio_file_path = f"outputAudio/{video.filename}"
-    # Write the audio to a file
-    audio.write_audiofile(audio_file_path)
 
-    # Close the video and audio files to free up resources
-    audio.close()
-    video.close()
-    return audio.filename
+

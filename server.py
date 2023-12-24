@@ -7,8 +7,10 @@ app = Flask(__name__)
 CORS(app)
 
 # Configuration
-UPLOAD_VIDEOS_FOLDER = "./uploaded_videos"
-UPLOAD_AUDIOS_FOLDER = "./uploaded_audios"
+UPLOAD_VIDEOS_FOLDER = "./upload_videos"
+UPLOAD_AUDIOS_FOLDER = "./upload_audios"
+youtube_auido_folder="./audio_youtube"
+audio_chcuks_folder="./output_audio_chuncks"
 PORT = 8000
 
 # Create necessary directories
@@ -27,9 +29,21 @@ def index():
 def process_file(file, folder_path, process_function):
     """Generic file processing function."""
     try:
-        file_path = os.path.join(folder_path, file.filename)
-        file.save(file_path)
-        result = process_function(file_path)
+        # file_path = os.path.join(folder_path, file.filename)
+        # file.save(file_path)
+        result = process_function(file)
+        # os.remove(file_path)
+       
+        # for file_name in os.listdir(folder_path):
+        #         file_path = os.path.join(folder_path, file_name)
+        #         try:
+        #             if os.path.isfile(file_path):
+        #                 os.unlink(file_path)
+        #             elif os.path.isdir(file_path):
+        #                 os.rmdir(file_path)
+        #         except Exception as e:
+        #             print(f"Error while deleting {file_path}: {e}")
+
         return jsonify({"data": result})
     except Exception as e:
         print(f"Error {type(e).__name__} occurred: {e}")
@@ -40,6 +54,8 @@ def process_audio():
     """Process uploaded audio files."""
     audio = request.files.get("audio")
     print(type(audio))
+    #covert audio to bytes
+    # audio_bytes=audio.read()
     if audio and audio.filename:
         return process_file(audio, UPLOAD_AUDIOS_FOLDER, proccesAudioFile)
     return jsonify({"error": "Invalid audio file. Please upload a valid file."}), 400
