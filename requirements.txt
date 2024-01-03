@@ -1,0 +1,12 @@
+deep_translator
+langdetect
+summa
+moviepy
+yt_dlp
+flask_cors
+transformers
+torch
+pydub
+ffmpeg
+pytube
+flask_socketio

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Atlas</title>
+    <style>
+        .row-container {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .row-item {
+            flex-basis: 30%;
+            text-align: center;
+            border-radius: 15px;
+            /* Rounded borders */
+            background-color: white;
+            /* Background color */
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .icon {
+            font-size: 2em;
+            /* Icon size */
+            margin-bottom: 10px;
+            /* Space between icon and form */
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        h1 {
+            color: #007bff;
+            text-align: center;
+        }
+
+        form {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #666;
+        }
+
+        .custom-file-upload {
+            display: inline-block;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 20px;
+            /* Rounded corners */
+            background-color: #007bff;
+            /* Background color */
+            color: white;
+            /* Text color */
+            margin-bottom: 20px;
+            /* Spacing */
+            border: 2px solid transparent;
+            /* Optional border */
+            transition: all 0.3s ease;
+            /* Smooth transition for hover effect */
+        }
+
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            color: black;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            /* Ensures it's on top of other elements */
+            font-size: 2em;
+        }
+
+        loading-screen p {
+            margin-top: 10px;
+            /* Adjust the space between icon and text */
+            color: #333;
+            /* Text color */
+            font-size: 1em;
+            /* Adjust font size as needed */
+            text-align: center;
+        }
+
+        /* Style for the spinner icon */
+        .loading-screen i {
+            font-size: 3em;
+            /* Adjust size as needed */
+            color: #007bff;
+            /* Color of the spinner */
+        }
+
+        /* Keyframes for the spin animation */
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Applying the animation to the spinner icon */
+        .fa-spin {
+            animation: spin 2s linear infinite;
+        }
+
+
+        .custom-file-upload:hover {
+            background-color: #0056b3;
+            /* Slightly darker shade for hover effect */
+            border-color: #004ba0;
+            /* Optional border color change on hover */
+        }
+
+        input[type="file"],
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            background-color: #4CAF50;
+            /* Primary color */
+            color: white;
+            /* Contrasting text color */
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+            /* Slightly darker shade for hover effect */
+        }
+
+        progress {
+            width: 100%;
+            height: 20px;
+            /* Adjust as needed */
+            margin-top: 10px;
+        }
+
+        progress[value] {
+            /* Resets the default appearance */
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+
+        progress[value]::-webkit-progress-bar {
+            background-color: #eee;
+            border-radius: 2px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) inset;
+        }
+
+        progress[value]::-webkit-progress-value {
+            background-color: #007bff;
+            border-radius: 2px;
+        }
+
+        progress[value]::-moz-progress-bar {
+            background-color: #007bff;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Hello in Atlas</h1>
+    <div id="loadingScreen" class="loading-screen">
+        <i class="fas fa-spinner fa-spin"></i> <!-- Spinning icon -->
+        <p> Atlas is Loading... </p>
+    </div>
+    <div class="row-container">
+        <!-- Audio upload with icon -->
+        <div class="row-item">
+            <!-- Font Awesome icon for audio -->
+            <form action="/getAudioFile" method="post" enctype="multipart/form-data">
+                <i class="fas fa-music icon"></i>
+                <label for="audio">Upload Audio File:</label>
+
+                <label for="audio" class="custom-file-upload">
+                    <i class="fas fa-upload"></i> Choose Audio File
+                </label>
+                <input type="file" id="audio" name="audio" accept="audio/*" required style="display: none;" />
+                <input type="submit" value="Upload" /><br />
+                <progress id="audioProgress" value="0" max="100" style="width: 100%;"></progress>
+
+            </form>
+        </div>
+
+        <!-- Video upload with icon -->
+        <div class="row-item">
+            <i class="fas fa-video icon"></i> <!-- Font Awesome icon for video -->
+            <form action="/getVideoFile" method="post" enctype="multipart/form-data">
+                <label for="video">Upload Video File:</label>
+
+                <label for="video" class="custom-file-upload">
+                    <i class="fas fa-upload"></i> Choose Video File
+                </label>
+                <input type="file" id="video" name="video" accept="video/*" required style="display: none;" />
+                <input type="submit" value="Upload" /><br />
+                <progress id="videoProgress" value="0" max="100" style="width: 100%;"></progress>
+
+            </form>
+        </div>
+
+
+        <!-- Link submission with icon -->
+        <div class="row-item">
+            <i class="fas fa-link icon"></i> <!-- Font Awesome icon for link -->
+            <form action="/getYoutubeVideoLink" method="post" enctype="application/json">
+                <label for="link">Insert Youtube Video Link:</label>
+                <input type="text" id="link" name="link" required />
+                <input type="submit" value="Send Video Link" /><br />
+
+            </form>
+        </div>
+    </div>
+</body>
+<script>
+
+    document.getElementById('audio').addEventListener('change', function (e) {
+        var file = e.target.files[0];
+        var formData = new FormData();
+        formData.append('audio', file);
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/getAudioFile', true);
+
+        xhr.upload.onprogress = function (e) {
+            if (e.lengthComputable) {
+                var percentComplete = (e.loaded / e.total) * 100;
+                document.getElementById('audioProgress').value = percentComplete;
+            }
+        };
+
+        xhr.send(formData);
+    });
+    
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('videoForm').addEventListener('submit', function (e) {
+            e.preventDefault(); // Prevent the default form submission
+
+            var file = document.getElementById('video').files[0];
+            var formData = new FormData();
+            formData.append('video', file);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'http://184.105.215.243:8070/getVideoFile', true);
+
+            xhr.upload.onprogress = function (e) {
+                if (e.lengthComputable) {
+                    var percentComplete = (e.loaded / e.total) * 100;
+                    document.getElementById('videoProgress').value = percentComplete;
+                }
+            };
+
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    // Handle the response, e.g., displaying it in the DOM
+                } else {
+                    // Handle errors
+                }
+            };
+
+            xhr.send(formData);
+        });
+    });
+    window.addEventListener('load', function () {
+        var loadingScreen = document.getElementById('loadingScreen');
+        loadingScreen.style.display = 'none';
+    });
+
+    function handleFileUpload() {
+        var formData = new FormData(); // Assuming you have a file to upload
+        // formData.append('file', yourFile); // Append file here
+
+        fetch('/getAudioFile', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Redirect to video_page.html with query parameters
+                window.location.href = 'video_page.html?fileName=' + encodeURIComponent(data.fileName);
+            })
+            .catch(error => console.error('Error:', error));
+    }
+</script>
+
+</html>
