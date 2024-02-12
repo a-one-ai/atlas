@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request, send_file
 from downloaders.DriveDownloader import drive_downloader
-
+from downloaders.OnedriveDownloader import onedrive_downloader
 # Create a Blueprint for all PDF-related routes
 downloader_blueprint = Blueprint('downloader', __name__, url_prefix='/downloader')
 
@@ -57,7 +57,7 @@ def download_onedrive():
         except:
             print("Error in translation json")
 
-        result = drive_downloader(video_link)
+        result = onedrive_downloader(video_link)
         print(result)
         return jsonify({"data": result})
         #except Exception as e:

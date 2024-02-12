@@ -125,7 +125,7 @@ def transcribe_whisper(audio_file):
     
     else:
         
-        res=pipe(audio_file)['text']
+        res=pipe(audio_file, return_timestamps='True')['text']
         delete_folder(audio_file)
         end = time.time()
         print(float(end - start))

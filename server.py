@@ -121,4 +121,4 @@ def process_youtube_link():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', debug=True, port=PORT, processes=True)
+    app.run(host='0.0.0.0', debug=False, port=PORT, processes=True)

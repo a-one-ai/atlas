@@ -4,6 +4,7 @@ import requests
 import datetime
 import re
 from transcripe import transcribe_whisper
+import os 
 
 def create_onedrive_directdownload (onedrive_link):
     data_bytes64 = base64.b64encode(bytes(onedrive_link, 'utf-8'))
@@ -16,8 +17,9 @@ def genrateUniqueName():
     return datetime.datetime.now().strftime("%Y%m%d%H%M%S%f")
 
 def download_file_from_onedrive(file_id, destination):
-
     URL = create_onedrive_directdownload(file_id)
+    print(URL)
+
     session = requests.Session()
 
     response = session.get(URL, params={"id": file_id}, stream=True)
@@ -47,14 +49,15 @@ def save_response_content(response, destination):
                 f.write(chunk)
 
 
-def drive_downloader(link):
+def onedrive_downloader(link):
     try:
         id = genrateUniqueName()
         destination = f"./downloaders/downloads/drive-{id}.mp4"
 
         print(f"dowload {link} to {destination}")
         download_file_from_onedrive(link, destination)
-        #res = transcribe_whisper(destination)
-        #return res
+        res = transcribe_whisper(destination)
+        os.remove(destination)
+        return res
     except Exception as e:
         return e
