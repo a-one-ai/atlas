@@ -2,6 +2,8 @@ import sys
 import requests
 import datetime
 import re
+from transcripe import transcribe_whisper
+
 
 def genrateUniqueName():
     return datetime.datetime.now().strftime("%Y%m%d%H%M%S%f")
@@ -45,7 +47,7 @@ def drive_downloader(link):
 
         print(f"dowload {link} to {destination}")
         download_file_from_google_drive(link, destination)
-
-        return destination
+        res = transcribe_whisper(destination)
+        return res
     except Exception as e:
         return e
