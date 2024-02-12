@@ -96,13 +96,13 @@ def split_audio(input_file):
         chunk = audio[start_time:end_time]
         if(end_time>(audio_duration*1000)):
 
-          chunk = audio[start_time:(audio_duration*1000)]
+            chunk = audio[start_time:(audio_duration*1000)]
 
         chunk.export(os.path.join(output_folder, f"chunk_{i + 1}.wav"), format="wav")
-        text+=pipe(f"{output_folder}/chunk_{i + 1}.wav")['text']
+        text+=pipe(f"{output_folder}/chunk_{i + 1}.wav",return_timestamps='True')['text']
 
     delete_folder(input_file)
-      
+
     return text
 
 def transcribe_whisper(audio_file):
@@ -113,39 +113,39 @@ def transcribe_whisper(audio_file):
     # Get the duration of the audio in seconds
     audio_duration = len(audio) / 1000
     if(audio_duration>900):
-      
-      res=split_audio(audio_file)
-      delete_folder(audio_file[:20]+"output_audio")
-      end = time.time()
-      print(float(end - start))
-      return res
+
+        res=split_audio(audio_file)
+        delete_folder(audio_file[:20]+"output_audio")
+        end = time.time()
+        print(float(end - start))
+        return res
     
     else:
-      
-      res=pipe(audio_file)['text']
-      delete_folder(audio_file)
-      end = time.time()
-      print(float(end - start))
-      return res
+        
+        res=pipe(audio_file)['text']
+        delete_folder(audio_file)
+        end = time.time()
+        print(float(end - start))
+        return res
 
 
 def transcribeLink(link):
-  
+
     audio=download_audio_from_youtube(link)
     result=transcribe_whisper(audio)
     return result
 
 def transcribeVideo(video_path):
-   audio=convertVideo(video_path)
-   result=transcribe_whisper(audio)
+    audio=convertVideo(video_path)
+    result=transcribe_whisper(audio)
 #  result=pipe(audio)['text']
 #  result=pipe(video_path)['text']
-   if os.path.exists(audio):
-     os.remove(audio)
-   return result
+    if os.path.exists(audio):
+        os.remove(audio)
+    return result
 
 def transcribeAudio(audio_path):
 
-   result=transcribe_whisper(audio_path)
-#   result=pipe(audio_path)['text']
-   return result
+    result=transcribe_whisper(audio_path)
+    #   result=pipe(audio_path)['text']
+    return result
