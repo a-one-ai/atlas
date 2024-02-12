@@ -1,99 +1,151 @@
-
-from video_sevice import download_youtube_video
+import torch
+from transformers import AutoModelForSpeechSeq2Seq, AutoProcessor, pipeline
+from video_sevice import convertVideo , download_audio_from_youtube
+import os
 from pydub import AudioSegment
 from pydub.silence import split_on_silence
-import os
 import numpy as np
-import whisper
-from video_sevice import genrateUniqueName
+import datetime
+import concurrent.futures
+import shutil
+import time
 
 
-model= whisper.load_model('large-v3',download_root='whisper_model')
-
-def is_human_speech(chunk, amplitude_threshold=-30):
-    # Convert the audio chunk to a numpy array
-    audio_array = np.array(chunk.get_array_of_samples())
-
-    # Calculate the amplitude of the audio chunk
-    amplitude = np.mean(np.abs(audio_array))
-
-    # Check if the amplitude is above the threshold
-    return amplitude > amplitude_threshold
+# Check CUDA availability
+device = torch.device("cuda:0")
+torch_dtype = torch.float16 if torch.cuda.is_available() else torch.float32
+# Load model and processor offline
+model_id = r"U:\\ALL PROJECTS __IMPORTANT__\\atlas\\model"
+#model_id = "openai/whisper-medium"
+model = AutoModelForSpeechSeq2Seq.from_pretrained(model_id, torch_dtype=torch_dtype, low_cpu_mem_usage=True, use_safetensors=True, local_files_only = True
+)
 
 
+model.to(device)
+processor = AutoProcessor.from_pretrained(model_id)
+pipe = pipeline(
+    "automatic-speech-recognition",
+    model=model,
+    tokenizer=processor.tokenizer,
+    feature_extractor=processor.feature_extractor,
+    max_new_tokens=128,
+    chunk_length_s=30,
+    batch_size=16,
+    return_timestamps=True,
+    torch_dtype=torch_dtype,
+    device=device,
+    generate_kwargs={"task": "transcribe"},
+)
 
-def transcribe_whisper(input_file, silence_threshold=-40, min_silence_duration=1000):
+
+def delete_folder(folder_path):
+    try:
+        shutil.rmtree(folder_path)
+        print(f"Folder '{folder_path}' and its contents have been successfully deleted.")
+    except Exception as e:
+        print(f"An error occurred while deleting the folder '{folder_path}': {e}")
+
+
+def genrateUniqueName():
+    return datetime.datetime.now().strftime("%Y%m%d%H%M%S%f")
+
+
+def transcribe(audio):
+    res=pipe(audio)['text']
+    return res
+
+
+def split_audio(input_file):
     # Load the audio file
-    audio = AudioSegment.from_file(input_file)
+    audio = AudioSegment.from_file(input_file[0])
 
-    output_folder="output_audio_chuncks"
+
+    output_folder='audio_chuncks'
+    # Get the duration of the audio in seconds
+    audio_duration = len(audio) / 1000  # in seconds
+    chunk_duration= 800
+
+    # Calculate the number of chunks
+    num_chunks = int(audio_duration / chunk_duration)+1
+
+    pipe = pipeline(
+        "automatic-speech-recognition",
+        model=model,
+        tokenizer=processor.tokenizer,
+        feature_extractor=processor.feature_extractor,
+        max_new_tokens=128,
+        chunk_length_s=30,
+        batch_size=16,
+        return_timestamps=True,
+        torch_dtype=torch_dtype,
+        device=device,
+        generate_kwargs={"task": "transcribe"},
+    )
+
+    text=""
+    chunk_paths=[]
 
     # Create the output folder if it doesn't exist
-    os.makedirs(output_folder, exist_ok=True)
+    if not os.path.exists(output_folder):
+        os.makedirs(output_folder)
 
-    # Split the audio based on silence
-    chunks = split_on_silence(audio, silence_thresh=silence_threshold, min_silence_len=min_silence_duration)
-    human_speech_chunks = [chunk for chunk in chunks if is_human_speech(chunk)]
+    # Split the audio into chunks
+    for i in range(num_chunks):
+        start_time = i * chunk_duration * 1000  # convert to milliseconds
+        end_time = (i + 1) * chunk_duration * 1000  # convert to milliseconds
+        chunk = audio[start_time:end_time]
+        if(end_time>(audio_duration*1000)):
 
-    id=genrateUniqueName()
+          chunk = audio[start_time:(audio_duration*1000)]
 
+        chunk.export(os.path.join(output_folder, f"chunk_{i + 1}.wav"), format="wav")
+        text+=pipe(f"{output_folder}/chunk_{i + 1}.wav")['text']
 
-    text = ""
-    # Save each chunk to the output folder
-    for i, chunk in enumerate(human_speech_chunks):
-        output_file = os.path.join(output_folder, f"chunk_{str(id)}_{str(i)}.wav")
-        chunk.export(output_file, format="wav")
-        text += model.transcribe(output_file)['text']
-        # print(f"chunk_{i}")
-        # print(text)
-    
-        # Remove the output folder after processing
-        # os.remove(output_file)
-    for file_name in os.listdir(output_folder):
-        file_path = os.path.join(output_folder, file_name)
-        try:
-            if os.path.isfile(file_path):
-                os.unlink(file_path)
-            elif os.path.isdir(file_path):
-                os.rmdir(file_path)
-        except Exception as e:
-            print(f"Error while deleting {file_path}: {e}")
+    delete_folder(input_file)
       
-    return str(text)
+    return text
+
+def transcribe_whisper(audio_file):
+    start = time.time()
+
+    audio = AudioSegment.from_file(str(audio_file))
+
+    # Get the duration of the audio in seconds
+    audio_duration = len(audio) / 1000
+    if(audio_duration>900):
+      
+      res=split_audio(audio_file)
+      delete_folder(audio_file[:20]+"output_audio")
+      end = time.time()
+      print(float(end - start))
+      return res
+    
+    else:
+      
+      res=pipe(audio_file)['text']
+      delete_folder(audio_file)
+      end = time.time()
+      print(float(end - start))
+      return res
 
 
 def transcribeLink(link):
-  audio=download_youtube_video(link)
-  res=transcribe_whisper(audio)
-#   os.remove(audio)
-  for file_name in os.listdir("audio_youtube"):
-        file_path = os.path.join("audio_youtube", file_name)
-        try:
-            if os.path.isfile(file_path):
-                os.unlink(file_path)
-            elif os.path.isdir(file_path):
-                os.rmdir(file_path)
-        except Exception as e:
-            print(f"Error while deleting {file_path}: {e}")
-#   print(res)
-  return res
-
-
-def transcribeVideo(video_path):
-    result = transcribe_whisper(video_path)
-    return result 
-
-
-def transcribeAudio(audio_path):
-    result = transcribe_whisper(audio_path)
+  
+    audio=download_audio_from_youtube(link)
+    result=transcribe_whisper(audio)
     return result
 
+def transcribeVideo(video_path):
+   audio=convertVideo(video_path)
+   result=transcribe_whisper(audio)
+#  result=pipe(audio)['text']
+#  result=pipe(video_path)['text']
+   if os.path.exists(audio):
+     os.remove(audio)
+   return result
 
+def transcribeAudio(audio_path):
 
-    
-
-
-
-
-
-
+   result=transcribe_whisper(audio_path)
+#   result=pipe(audio_path)['text']
+   return result

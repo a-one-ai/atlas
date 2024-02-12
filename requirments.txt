@@ -1,10 +1,10 @@
 deep_translator
 langdetect
 summa
+moviepy
+pytube
 flask_cors
+transformers
+torch
 ffmpeg
-git+https://github.com/openai/whisper.git 
-pydub
-numpy
-yt_dlp
-
+flask_socketio
