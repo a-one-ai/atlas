@@ -1,4 +1,10 @@
 __pycache__
-output_audio
 venv
+
+output_audio/*
 model/*
+*.ipynb
+audio/*
+video/*
+downloaders/downloads/*
+tr.py

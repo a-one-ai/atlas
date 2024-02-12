@@ -4,10 +4,18 @@ import os
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit
 import datetime
+from downloaders.downloaders_route import downloader_blueprint
 
 app = Flask(__name__)
+
+
+# Register the Blueprint with the app
+app.register_blueprint(downloader_blueprint)
+
 CORS(app)
 socketio = SocketIO(app, cors_allowed_origins="*")  # Adjust cors_allowed_origins as needed
+
+
 
 @socketio.on('connect')
 def handle_connect():
@@ -43,14 +51,14 @@ def process_file(file, folder_path, process_function):
     """Generic file processing function."""
     id=genrateUniqueName()   
     try:
-         file_path = os.path.join(folder_path, f"{id}"+file.filename)
-         print(id)
-         file.save(file_path)
-         send_status_update("Processing file...")
-         result = process_function(file_path)
-         #send_status_update("Processed file...")
-         os.remove(file_path)
-         return jsonify({"data": result})
+        file_path = os.path.join(folder_path, f"{id}"+file.filename)
+        print(id)
+        file.save(file_path)
+        send_status_update("Processing file...")
+        result = process_function(file_path)
+        #send_status_update("Processed file...")
+        os.remove(file_path)
+        return jsonify({"data": result})
     except Exception as e:
         print(f"Error {type(e).__name__} occurred: {e}")
         return jsonify({"error": "Internal server error. File processing failed."}), 500

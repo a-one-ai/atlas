@@ -14,8 +14,10 @@ import time
 # Check CUDA availability
 device = torch.device("cuda:0")
 torch_dtype = torch.float16 if torch.cuda.is_available() else torch.float32
+
 # Load model and processor offline
 model_id = r"U:\\ALL PROJECTS __IMPORTANT__\\atlas\\model"
+
 #model_id = "openai/whisper-medium"
 model = AutoModelForSpeechSeq2Seq.from_pretrained(model_id, torch_dtype=torch_dtype, low_cpu_mem_usage=True, use_safetensors=True, local_files_only = True
 )
@@ -39,6 +41,7 @@ pipe = pipeline(
 
 
 def delete_folder(folder_path):
+
     try:
         shutil.rmtree(folder_path)
         print(f"Folder '{folder_path}' and its contents have been successfully deleted.")
