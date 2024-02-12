@@ -63,6 +63,7 @@ def process_file(file, folder_path, process_function):
         print(f"Error {type(e).__name__} occurred: {e}")
         return jsonify({"error": "Internal server error. File processing failed."}), 500
 
+
 @app.route("/getAudioFile", methods=["POST"])
 def process_audio():
     """Process uploaded audio files."""
@@ -72,6 +73,7 @@ def process_audio():
     if audio:
         return process_file(audio, UPLOAD_AUDIOS_FOLDER, proccesAudioFile)
     return jsonify({"error": "Invalid audio file. Please upload a valid file."}), 400
+
 
 @app.route("/getVideoFile", methods=["POST"])
 def process_video():
@@ -83,6 +85,7 @@ def process_video():
     if video:
         return process_file(video, UPLOAD_VIDEOS_FOLDER, proccesVideoFile)
     return jsonify({"error": "Invalid video file. Please upload a valid file."}), 400
+
 
 @app.route("/getYoutubeVideoLink", methods=["POST"])
 def process_youtube_link():
