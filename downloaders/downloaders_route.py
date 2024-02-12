@@ -4,7 +4,6 @@ from downloaders.DriveDownloader import drive_downloader
 # Create a Blueprint for all PDF-related routes
 downloader_blueprint = Blueprint('downloader', __name__, url_prefix='/downloader')
 
-
 # Define a route for the function "/pdf" endpoint
 @downloader_blueprint.route('/drive', methods=['POST'])
 def download_drive():
